@@ -1,0 +1,38 @@
+{% extends 'default/main.html' %}
+
+{% block title %}
+Форум MMORPG
+{% endblock title %}
+
+
+{% block content %}
+
+    <h1>Доска объявлений</h1>
+
+        <hr>
+        <div class="custom-text">
+            <table>
+
+               {% for ad in advertisements %}
+               <tr>
+                   <td><a href="{% url 'Ad' ad.id %}">{{ ad.title }}</a></td>
+                   <td>{{ ad.date_time|date:'d F Y' }}</td>
+                   <td>{{ ad.author }}</td>
+                   <td>&#128077;{{ ad.like }}</td>
+                   <td>&#128078;{{ ad.dislike }}</td>
+                   <td>
+                       {% for category in ad.advertisement_category.all %}
+                       {{ category }}
+                       {% endfor %}
+                   </td>
+               </tr>
+                    {% if not forloop.last %}
+                        <tr>
+                            <td colspan="6"><hr></td>
+                        </tr>
+                    {% endif %}
+               {% endfor %}
+
+           </table>
+        </div>
+{% endblock content %}

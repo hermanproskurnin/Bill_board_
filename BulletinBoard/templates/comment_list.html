@@ -1,0 +1,39 @@
+{% extends 'default/main.html' %}
+
+{% block title %}Отклики{% endblock title %}
+
+{% block content %}
+    <h1>Отклики на ваши объявления</h1>
+
+       <form action="" method="get">
+       {{ filterset.form.as_p }}
+       <input type="submit" value="Найти" />
+       </form>
+
+    <hr>
+
+    <div class="custom-text">
+            <table>
+
+               {% for comment in comments %}
+                    {% if comment.advertisement.author == request.user and not comment.approve %}
+                   <tr>
+                       <td>{{ comment.advertisement }}</td>
+                       <td>{{ comment.author }}</td>
+                       <td>{{ comment.date_time|date:'d F Y' }}</td>
+                       <td>{{ comment.content }}</td>
+                       <td><a href="{% url 'approve_comment' comment.pk %}">&#9989;</a></td>
+                       <td><a href="{% url 'reject_comment' comment.pk %}">&#10060;</a></td>
+               </tr>
+                        {% if not forloop.last %}
+                            <tr>
+                                <td colspan="6"><hr></td>
+                            </tr>
+                        {% endif %}
+                    {% endif %}
+               {% endfor %}
+
+           </table>
+        </div>
+
+{% endblock content %}

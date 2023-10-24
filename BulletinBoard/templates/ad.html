@@ -1,0 +1,72 @@
+{% extends 'default/main.html' %}
+
+{% block title %}
+{{ ad.title }}
+{% endblock title %}
+
+{% block content %}
+    <h1>{{ ad.title }}</h1>
+    <p>{{ ad.content }}</p>
+    {% if ad.media_file %}
+        {% if ad.media_file.url|lower|slice:'-4:' == ".jpg" or advertisement.media_file.url|lower|slice:'-4:' == ".png" %}
+            <img src="{{ ad.media_file.url }}" alt="Image" width="600" height="400">
+        {% elif ad.media_file.url|lower|slice:'-4:' == ".mp4" %}
+            <video controls width="600" height="400">
+                <source src="{{ ad.media_file.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        {% endif %}
+    {% endif %}
+    <div style="text-align: right;">
+        <h6><a href="{% url 'like_ad' ad.pk %}">&#128077;</a>: {{ ad.like }} <a href="{% url 'dislike_ad' ad.pk %}">&#128078;</a>: {{ ad.dislike }}</h6>
+        <h4>{{ ad.author }}</h4>
+        <p>{{ ad.date_time|date:'d F Y' }}</p>
+        {% if request.user == ad.author %}
+        <a href="{% url 'ad_update' ad.pk %}">Редактировать</a>
+        <a href="{% url 'ad_delete' ad.pk %}">Удалить</a>
+        {% endif %}
+    </div>
+
+
+
+    <ul>
+        {% for comment in comments %}
+            {% if comment.approve %}
+            <li>
+                <h4>{{ comment.author }}</h4>
+                <p>{{ comment.content }}</p>
+                <p>{{ comment.date_time|date:'d F Y' }}</p>
+            </li>
+                {% if not forloop.last %}
+                <tr>
+                    <td><hr></td>
+                </tr>
+                {% endif %}
+            {% endif %}
+        {% empty %}
+        <p>Здесь пока нет откликов=(</p>
+        {% endfor %}
+    </ul>
+
+
+{% if request.user.is_authenticated %}
+
+
+    <h2>Оставить отклик</h2>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+        <form method="post" action="{% url 'create_comment' ad.pk %}">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit">Отправить</button>
+        </form>
+
+
+{% else %}
+<hr>
+<p>Чтобы оставить отклик, войдите в систему.</p>
+{% endif %}
+{% endblock content %}

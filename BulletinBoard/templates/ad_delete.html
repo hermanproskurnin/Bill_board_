@@ -1,0 +1,15 @@
+{% extends 'default/main.html' %}
+
+{% block title %}
+Удаление объявлений
+{% endblock title %}
+
+{% block content %}
+<h1>Удалить объявление</h1>
+<hr>
+<form action="" method="post">
+    {% csrf_token %}
+    <p>Вы уверены, что хотите удалить объявление?</p>
+    <input type="submit" value="Удалить" />
+</form>
+{% endblock content %}
